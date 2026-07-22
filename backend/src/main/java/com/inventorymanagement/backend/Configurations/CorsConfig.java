@@ -1,0 +1,26 @@
+package com.inventorymanagement.backend.Configurations;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.*;
+
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:5173") // React Vite
+                // .allowedOrigins("http://localhost:3000") // React CRA
+                .allowedMethods(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS",
+                        "PATCH"
+                )
+
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+}

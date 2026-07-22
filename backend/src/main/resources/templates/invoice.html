@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Invoice – Rakshion Agro Solution</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', Arial, sans-serif;
+            background: #EDE8DF;
+            padding: 40px 20px;
+            color: #23211D;
+        }
+
+        .invoice-wrapper {
+            max-width: 780px;
+            margin: 0 auto;
+            background: #FFFDF9;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
+
+        /* ── Header ── */
+        .inv-header {
+            background: #21201C;
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid #B8873F;
+        }
+
+        .inv-header td {
+            padding: 18px 44px;
+            vertical-align: top;
+        }
+
+        .inv-header td.inv-header-right {
+            text-align: right;
+        }
+
+        .inv-logo-row {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inv-logo-row td {
+            vertical-align: middle;
+            padding: 0;
+        }
+
+        .inv-logo-row td.inv-logo-cell {
+            width: 44px;
+            padding-right: 12px;
+        }
+
+        .inv-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: #B8873F;
+            text-align: center;
+            line-height: 34px;
+        }
+
+        .inv-logo-icon svg {
+            vertical-align: middle;
+            stroke: #21201C;
+            width: 18px;
+            height: 18px;
+        }
+
+        .inv-brand-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #FFFDF9;
+            letter-spacing: 0.3px;
+        }
+
+        .inv-brand-tag {
+            font-size: 9.5px;
+            color: #B8873F;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .inv-company-addr {
+            font-size: 10px;
+            color: #A6A199;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .inv-title-word {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFDF9;
+            letter-spacing: 3px;
+        }
+
+        .inv-number {
+            font-size: 12px;
+            color: #A6A199;
+            margin-top: 8px;
+        }
+
+        .inv-number strong {
+            color: #B8873F;
+        }
+
+        .inv-header-date {
+            font-size: 10.5px;
+            color: #A6A199;
+            margin-top: 3px;
+        }
+
+        .inv-status-badge {
+            display: inline-block;
+            border: 1px solid #B8873F;
+            color: #B8873F;
+            font-size: 10px;
+            padding: 4px 14px;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* ── Body ── */
+        .inv-body {
+            padding: 34px 44px;
+        }
+
+        .section-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #B8873F;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Bill to */
+        .bill-to-block {
+            margin-bottom: 16px;
+        }
+
+        .bill-to-block .section-label {
+            font-size: 8.5px;
+            margin-bottom: 4px;
+        }
+
+        .party-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #23211D;
+        }
+
+        .party-details {
+            font-size: 10.5px;
+            color: #6B675F;
+            line-height: 1.5;
+        }
+
+        /* Line items table */
+        .inv-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 20px;
+            table-layout: fixed;
+        }
+
+        .inv-table col.c-sno   { width: 7%; }
+        .inv-table col.c-item  { width: 31%; }
+        .inv-table col.c-qty   { width: 10%; }
+        .inv-table col.c-unit  { width: 12%; }
+        .inv-table col.c-price { width: 20%; }
+        .inv-table col.c-amt   { width: 20%; }
+
+        .inv-table thead th {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #FFFDF9;
+            background: #21201C;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .inv-table thead th:first-child { text-align: center; }
+        .inv-table thead th:nth-child(n+5) { text-align: right; }
+
+        .inv-table tbody td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #EFEAE0;
+            vertical-align: top;
+            color: #23211D;
+        }
+
+        .inv-table tbody td:first-child { text-align: center; color: #928D82; }
+        .inv-table tbody td:nth-child(n+5) { text-align: right; }
+
+        .inv-table tbody tr:last-child td { border-bottom: none; }
+
+        .item-desc {
+            font-size: 12px;
+            color: #23211D;
+            font-weight: 500;
+        }
+
+        /* Totals */
+        .inv-totals {
+            margin-bottom: 26px;
+        }
+
+        .totals-inner {
+            width: 270px;
+            margin-left: auto;
+        }
+
+        .total-row {
+            width: 100%;
+            font-size: 12px;
+            padding: 7px 0;
+            color: #6B675F;
+            border-bottom: 1px solid #EFEAE0;
+        }
+
+        .total-row td.label { text-align: left; }
+        .total-row td.val { text-align: right; font-weight: 500; color: #23211D; }
+
+        .total-row.final {
+            border-top: 2px solid #B8873F;
+            margin-top: 6px;
+        }
+
+        .total-row.final td {
+            padding-top: 12px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .total-row.final td.label { color: #21201C; }
+        .total-row.final td.val { color: #B8873F; }
+
+        /* Divider */
+        .inv-divider {
+            border: none;
+            border-top: 1px solid #E4DECF;
+            margin: 0 0 26px;
+        }
+
+        /* Payment / QR block */
+        .pay-qr-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pay-qr-table td.qr-cell {
+            width: 92px;
+            vertical-align: top;
+            padding-right: 14px;
+        }
+
+        .qr-caption {
+            font-size: 9.5px;
+            color: #928D82;
+            text-align: center;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .payment-item {
+            font-size: 12px;
+            color: #6B675F;
+            margin-bottom: 7px;
+            line-height: 15px;
+        }
+
+        .payment-item svg {
+            width: 14px;
+            height: 14px;
+            stroke: #B8873F;
+            vertical-align: middle;
+            margin-right: 8px;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Footer */
+        .inv-footer {
+            background: #21201C;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inv-footer td {
+            padding: 16px 44px;
+            vertical-align: middle;
+        }
+
+        .inv-footer td.footer-right {
+            text-align: right;
+        }
+
+        .footer-text { font-size: 10.5px; color: #A6A199; }
+        .footer-tagline { font-size: 10.5px; color: #B8873F; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* Print */
+        @media print {
+            body { background: #fff; padding: 0; }
+            .invoice-wrapper { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-wrapper">
+
+    <!-- ── HEADER ── -->
+    <table class="inv-header">
+        <tr>
+            <td class="inv-header-left">
+                <table class="inv-logo-row">
+                    <tr>
+                        <td class="inv-logo-cell">
+                            <div class="inv-logo-icon">
+                                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M12 2C12 2 5 9.5 5 14a7 7 0 0 0 14 0C19 9.5 12 2 12 2z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inv-brand-name">Rakshion Agro Solution</div>
+                            <div class="inv-brand-tag">Agricultural Inputs &amp; Solutions</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="inv-company-addr">
+                    14/B, Panchayat Union Street, Vallioor &#8211; 627117<br/>
+                    Tamil Nadu, India &#160;&#183;&#160; +91 98655 76226<br/>
+                    GSTIN: 33AAAAA0000A1Z5
+                </div>
+            </td>
+            <td class="inv-header-right">
+                <div class="inv-title-word">INVOICE</div>
+                <div class="inv-number">No. &#160;<strong th:text="${invoiceNo}">#ARI-2024-0087</strong></div>
+                <div class="inv-header-date" th:text="${invoice['invoiceDate']}">28 May 2026</div>
+                <div>
+                    <span class="inv-status-badge" th:text="${invoice['status']}">Unpaid</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ── BODY ── -->
+    <div class="inv-body">
+
+        <!-- Bill to -->
+        <div class="bill-to-block">
+            <div class="section-label">Bill to</div>
+            <div class="party-name" th:text="${customerName}">Murugan Farm Supplies</div>
+            <div class="party-details" th:utext="${invoice['billingAddress']}">
+                Survey No. 42, Dindigul Road<br/>
+                Madurai &#8211; 625 018, Tamil Nadu<br/>
+                GSTIN: 33BBBBB1111B1Z3
+            </div>
+        </div>
+
+        <!-- Line items table -->
+        <table class="inv-table">
+            <colgroup>
+                <col class="c-sno"/>
+                <col class="c-item"/>
+                <col class="c-qty"/>
+                <col class="c-unit"/>
+                <col class="c-price"/>
+                <col class="c-amt"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Item / Description</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Unit price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item, iStat : ${invoice['items']}">
+                    <td th:text="${iStat.count}">1</td>
+                    <td>
+                        <div class="item-desc" th:text="${item['name']}">16mm Inline Drip Tape (500m roll)</div>
+                    </td>
+                    <td th:text="${item['qty']}">10</td>
+                    <td th:text="${item['unit']}">Roll</td>
+                    <td th:text="${item['unitPrice']}">&#8377;1,850</td>
+                    <td th:text="${item['amount']}">&#8377;18,500</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Totals -->
+        <div class="inv-totals">
+            <table class="totals-inner">
+                <tr class="total-row">
+                    <td class="label">Subtotal</td>
+                    <td class="val" th:text="${invoice['subtotal']}">&#8377;54,850</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="label">CGST (9%)</td>
+                    <td class="val" th:text="${invoice['cgst']}">&#8377;4,937</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="label">SGST (9%)</td>
+                    <td class="val" th:text="${invoice['sgst']}">&#8377;4,937</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="label">Transport charges</td>
+                    <td class="val" th:text="${invoice['transport']}">&#8377;500</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="label">Discount</td>
+                    <td class="val" th:text="${invoice['discount']}">&#8211; &#8377;2,742</td>
+                </tr>
+                <tr class="total-row final">
+                    <td class="label">Total due</td>
+                    <td class="val" th:text="${invoice['amount']}">&#8377;62,482</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr class="inv-divider"/>
+
+        <!-- Payment details -->
+        <div>
+            <div class="section-label">Payment details</div>
+
+            <table class="pay-qr-table">
+                <tr>
+                    <!--
+                        QR code cell. `invoice['upiQrBase64']` must be a base64-encoded
+                        PNG string generated server-side (see PdfService notes) that
+                        encodes a upi://pay deep link with the invoice's exact total
+                        amount baked into the `am` parameter, so scanning it in any
+                        UPI app pre-fills the amount automatically.
+                    -->
+                    <td class="qr-cell" th:if="${invoice['upiQrBase64']}">
+                        <img th:src="'data:image/png;base64,' + ${invoice['upiQrBase64']}"
+                             width="84" height="84"
+                             alt="Scan to pay via UPI"
+                             src="" />
+                        <div class="qr-caption">Scan to pay via UPI<br/>Amount auto-filled</div>
+                    </td>
+                    <td>
+                        <div class="payment-item">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            Indian Bank &#8211; Current A/C
+                        </div>
+
+                        <div class="payment-item">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                                <line x1="2" y1="10" x2="22" y2="10"/>
+                            </svg>
+                            A/C No: 7500123456789
+                        </div>
+
+                        <div class="payment-item">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                            IFSC: IDIB000M123
+                        </div>
+
+                        <div class="payment-item">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="7" y="2" width="10" height="20" rx="2"/>
+                                <line x1="12" y1="18" x2="12.01" y2="18"/>
+                            </svg>
+                            UPI: s.abraham6363-1@okicic
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div><!-- /inv-body -->
+
+    <!-- ── FOOTER ── -->
+    <table class="inv-footer">
+        <tr>
+            <td class="footer-text">
+                Rakshion Agro Solution &#160;&#183;&#160; GSTIN 33AAAAA0000A1Z5 &#160;&#183;&#160; Lic. No. TN-AGR-2019-04521
+            </td>
+            <td class="footer-right footer-tagline">Rooted in Trust, Growing Together</td>
+        </tr>
+    </table>
+
+</div><!-- /invoice-wrapper -->
+
+</body>
+</html>
